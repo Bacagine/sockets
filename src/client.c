@@ -82,33 +82,33 @@ typedef STRUCT_SOCKADDR_IN * PSTRUCT_SOCKADDR_IN;
  */
 void vChat(int iSockFd)
 {
-	char szBuf[MAX];
-	int ii;
-	
+  char szBuf[MAX];
+  int ii;
+  
   while(true)
   {
-		bzero(szBuf, sizeof(szBuf));
-
-		printf("Type a string to send to the server: ");
-		ii = 0;
-
-		while((szBuf[ii++] = getchar()) != '\n');
-
-		write(iSockFd, szBuf, sizeof(szBuf));
-
-		bzero(szBuf, sizeof(szBuf));
-
-		read(iSockFd, szBuf, sizeof(szBuf));
-
-		printf("From Server : %s", szBuf);
-
-		if((strncmp(szBuf, "exit", 4)) == 0)
+    bzero(szBuf, sizeof(szBuf));
+    
+    printf("Type a string to send to the server: ");
+    ii = 0;
+    
+    while((szBuf[ii++] = getchar()) != '\n');
+    
+    write(iSockFd, szBuf, sizeof(szBuf));
+    
+    bzero(szBuf, sizeof(szBuf));
+    
+    read(iSockFd, szBuf, sizeof(szBuf));
+    
+    printf("From Server : %s", szBuf);
+    
+    if((strncmp(szBuf, "exit", 4)) == 0)
     {
-			printf("Client Exit...\n");
+      printf("Client Exit...\n");
       
-			break;
-		}
-	}
+      break;
+    }
+  }
 }
 
 /******************************************************************************
@@ -118,8 +118,8 @@ void vChat(int iSockFd)
  ******************************************************************************/
 int main(int argc, char **argv)
 {
-	int iSockFd;
-	STRUCT_SOCKADDR_IN stServAdd;
+  int iSockFd;
+  STRUCT_SOCKADDR_IN stServAdd;
   STRUCT_SOCKADDR_IN stClient;
 
   UNUSED(argc);
@@ -128,49 +128,49 @@ int main(int argc, char **argv)
   memset(&stServAdd, 0, sizeof(stServAdd));
   memset(&stClient , 0, sizeof(stClient ));
 
-	/**
+  /**
    * socket create and verification
    */
-	iSockFd = socket(AF_INET, SOCK_STREAM, 0);
-	if(iSockFd == -1)
+  iSockFd = socket(AF_INET, SOCK_STREAM, 0);
+  if(iSockFd == -1)
   {
-		fprintf(stderr, "E: socket creation failed...\n");
+    fprintf(stderr, "E: socket creation failed...\n");
     
-		exit(EXIT_FAILURE);
-	}
+    exit(EXIT_FAILURE);
+  }
 
   printf("Socket successfully created..\n");
 
-	bzero(&stServAdd, sizeof(stServAdd));
+  bzero(&stServAdd, sizeof(stServAdd));
 
-	/**
+  /**
    * assign IP, PORT
    */
-	stServAdd.sin_family = AF_INET;
+  stServAdd.sin_family = AF_INET;
   stServAdd.sin_addr.s_addr = inet_addr(IP);
-	stServAdd.sin_port = htons(PORT);
+  stServAdd.sin_port = htons(PORT);
 
-	/*+
+  /*+
    * connect the stClientent socket to server socket
-	 */
+   */
   if(connect(iSockFd, (PSTRUCT_SOCKADDR) &stServAdd, sizeof(stServAdd)) != 0)
   {
-		fprintf(stderr, "E: connection with the server failed...\n");
+    fprintf(stderr, "E: connection with the server failed...\n");
     
-		exit(EXIT_FAILURE);
-	}
-	
+    exit(EXIT_FAILURE);
+  }
+  
   printf("connected to the server..\n");
 
-	/**
+  /**
    * vChattion for chat
-	 */
+   */
   vChat(iSockFd);
 
-	/**
+  /**
    * close the socket
    */
-	close(iSockFd);
+  close(iSockFd);
 
   return 0;
 }

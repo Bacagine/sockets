@@ -82,50 +82,50 @@ typedef STRUCT_SOCKADDR_IN * PSTRUCT_SOCKADDR_IN;
  */
 void vChat(int iConnFd) 
 { 
-	char szBuf[MAX]; 
-	int ii; 
+  char szBuf[MAX]; 
+  int ii; 
 
-	/**
+  /**
    * infinite loop for chat
    */
-	while(true)
+  while(true)
   { 
-		bzero(szBuf, MAX); 
+    bzero(szBuf, MAX); 
 
-		/**
+    /**
      * read the message from stClient and copy it in szBufer 
      */
     read(iConnFd, szBuf, sizeof(szBuf)); 
-		
+    
     /**
      * print szBufer which contains the stClient contents
      */
     printf("From Clientent: %s"
            "Type a string to send to the client: ", szBuf
     ); 
-		bzero(szBuf, MAX); 
-		ii = 0; 
-		
+    bzero(szBuf, MAX); 
+    ii = 0; 
+    
     /**
      * copy server message in the szBufer
      */
-		while((szBuf[ii++] = getchar()) != '\n'); 
+    while((szBuf[ii++] = getchar()) != '\n'); 
 
-		/**
+    /**
      * and send that szBufer to stClient
      */
-		write(iConnFd, szBuf, sizeof(szBuf));
+    write(iConnFd, szBuf, sizeof(szBuf));
 
-		/**
+    /**
      * if msg contains "Exit" then server exit and chat ended. 
-		 */
+     */
     if(strncmp("exit", szBuf, 4) == 0)
     { 
-			printf("Server Exit...\n"); 
+      printf("Server Exit...\n"); 
       
-			break; 
-		} 
-	} 
+      break; 
+    } 
+  } 
 } 
 
 /******************************************************************************
@@ -135,10 +135,10 @@ void vChat(int iConnFd)
  ******************************************************************************/
 int main(int argc, char **argv) 
 { 
-	int iSockFd;
+  int iSockFd;
   int iConnFd;
   int iLength; 
-	STRUCT_SOCKADDR_IN stServAdd;
+  STRUCT_SOCKADDR_IN stServAdd;
   STRUCT_SOCKADDR_IN stClient; 
   
   UNUSED(argc);
@@ -147,78 +147,78 @@ int main(int argc, char **argv)
   memset(&stServAdd, 0, sizeof(stServAdd));
   memset(&stClient , 0, sizeof(stClient ));
 
-	/**
+  /**
    * socket create and verification
    */
-	iSockFd = socket(AF_INET, SOCK_STREAM, 0); 
-	
+  iSockFd = socket(AF_INET, SOCK_STREAM, 0); 
+  
   if(iSockFd == -1)
   { 
-		fprintf(stderr, "E: socket creation failed...\n"); 
+    fprintf(stderr, "E: socket creation failed...\n"); 
     
-		exit(EXIT_FAILURE);
-	} 
-	else
+    exit(EXIT_FAILURE);
+  } 
+  else
   {
-		printf("Socket successfully created..\n"); 
+    printf("Socket successfully created..\n"); 
   }
   
   bzero(&stServAdd, sizeof(stServAdd)); 
 
-	/**
+  /**
    * assign IP, PORT
    */
-	stServAdd.sin_family = AF_INET; 
-	stServAdd.sin_addr.s_addr = htonl(INADDR_ANY); 
-	stServAdd.sin_port = htons(PORT); 
+  stServAdd.sin_family = AF_INET; 
+  stServAdd.sin_addr.s_addr = htonl(INADDR_ANY); 
+  stServAdd.sin_port = htons(PORT); 
 
-	/**
+  /**
    * Binding newly created socket to given IP and verification 
    */
-	if((bind(iSockFd,(PSTRUCT_SOCKADDR) &stServAdd, sizeof(stServAdd))) != 0)
+  if((bind(iSockFd,(PSTRUCT_SOCKADDR) &stServAdd, sizeof(stServAdd))) != 0)
   { 
-		fprintf(stderr, "E: socket bind failed...\n"); 
+    fprintf(stderr, "E: socket bind failed...\n"); 
     
-		exit(EXIT_FAILURE); 
-	} 
+    exit(EXIT_FAILURE); 
+  } 
 
   printf("Socket successfully binded..\n"); 
 
-	/**
+  /**
    * Now server is ready to listen and verification 
    */
-	if((listen(iSockFd, 5)) != 0)
+  if((listen(iSockFd, 5)) != 0)
   { 
-		fprintf(stderr, "E: Listen failed...\n"); 
+    fprintf(stderr, "E: Listen failed...\n"); 
   
     exit(EXIT_FAILURE); 
-	} 
+  } 
 
   printf("Server listening..\n"); 
 
   iLength = sizeof(stClient); 
 
-	/**
+  /**
    * Accept the data packet from stClient and verification
    */
-	iConnFd = accept(iSockFd, (PSTRUCT_SOCKADDR) &stClient, (socklen_t *) &iLength); 
-	if(iConnFd < 0)
+  iConnFd = accept(iSockFd, (PSTRUCT_SOCKADDR) &stClient, (socklen_t *) &iLength); 
+  if(iConnFd < 0)
   { 
-		fprintf(stderr, "E: server accept failed...\n"); 
+    fprintf(stderr, "E: server accept failed...\n"); 
     
-		exit(EXIT_FAILURE); 
-	} 
+    exit(EXIT_FAILURE); 
+  } 
 
   printf("server accept the stClient...\n"); 
 
-	/**
+  /**
    * Function for chatting between stClient and server 
-	 */
+   */
   vChat(iConnFd); 
 
-	/**
+  /**
    * After chatting close the socket 
-	 */
+   */
   close(iSockFd); 
 
   return 0;
