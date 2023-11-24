@@ -1,0 +1,1 @@
+make all DEBUG_COMPILATION=1
